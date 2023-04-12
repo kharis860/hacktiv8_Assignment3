@@ -12,12 +12,12 @@ module.exports = {
     try {
       const { username, email, password } = req.body;
       const data = await User.create({ username, email, password });
-      const endData = {
+      const response = {
         id: data.id,
         username: data.username,
         email: data.email,
       };
-      res.status(201).json({ user_data: endData });
+      res.status(201).json({ response });
       // res.send("sip");
     } catch (error) {
       res.status(error?.code || 500).json(error);
