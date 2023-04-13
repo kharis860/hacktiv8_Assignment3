@@ -42,8 +42,8 @@ module.exports = {
     try {
       const { title, caption, image_url } = req.body;
       const { id } = req.UserData;
-      const add = await Photo.create({ title, caption, image_url, UserId: id });
-      res.status(201).json({ add });
+      const response = await Photo.create({ title, caption, image_url, UserId: id });
+      res.status(201).json({ response });
     } catch (error) {
       console.log(error?.code || 500).json(error);
     }

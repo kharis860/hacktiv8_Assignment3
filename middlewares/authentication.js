@@ -13,8 +13,9 @@ const auth = async (req, res, next) => {
       return;
     }
     // mengambil data dari header dan komparasi token
-    const tokenAuth = req.headers.authorization.split(" ")[1];
+
     // ambil credential dari verify jwt
+    const tokenAuth = req.headers.authorization.split(" ")[1];
     const isAuth = verifyToken(tokenAuth);
     const loadEmail = isAuth.email;
     const loadId = isAuth.id;

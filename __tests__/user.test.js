@@ -70,7 +70,7 @@ describe("POST /user/login", () => {
       console.log(error);
     }
   });
-
+  //   succes response test
   it("response login 200", (done) => {
     request(app)
       .post("/user/login")
@@ -82,6 +82,23 @@ describe("POST /user/login", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res.body).toHaveProperty("token");
+        done();
+      });
+  });
+
+  //   error response test
+  it(" login response 200", (done) => {
+    request(app)
+      .post("/user/login")
+      .send({
+        email: "admin@gmail.com",
+        password: "admin123",
+      })
+      .expect(404)
+      .end((err, res) => {
+        if (err) done(err);
+        expect(res.body).toHaveProperty("message");
+        expect(res.body.message).toEqual("email didn't exist");
         done();
       });
   });
