@@ -2,23 +2,25 @@ const request = require("supertest");
 const app = require("../app");
 const { Photo, User } = require("../models");
 const { generateToken } = require("../helpers/jwt");
+// global variable for token
 let token;
+// global variable for data user from creating data user
 let userCreate;
 describe("POST /photo/", () => {
   beforeAll(async () => {
     try {
+      // create user dan mengubah variable global
       userCreate = await User.create({
         username: "andi",
         email: "andi@gmail.com",
         password: "andi123",
       });
-      //       console.log(cred.data);
+      // generate token dan mengubah variable global
       token = generateToken({
         id: userCreate.id,
         username: userCreate.username,
         email: userCreate.email,
       });
-      console.log(token);
     } catch (error) {
       console.log(error);
     }
@@ -38,7 +40,7 @@ describe("POST /photo/", () => {
         if (err) {
           done(err);
         }
-        console.log(res.body.response, "test create photo succes (with token)");
+        // cek API response
         expect(res.body.response).toHaveProperty("id");
         expect(res.body.response).toHaveProperty("title");
         expect(res.body.response.title).toEqual("photo doooni new");
@@ -51,7 +53,6 @@ describe("POST /photo/", () => {
         expect(res.body.response).toHaveProperty("createdAt");
         expect(res.body.response).toHaveProperty("updatedAt");
         done();
-        //         expect(res.body.response).toHaveProperty("title");
       });
   });
   // create photo error response
@@ -69,11 +70,9 @@ describe("POST /photo/", () => {
         if (err) {
           done(err);
         }
-        console.log(res.body, "test create photo error (token)");
+        // cek API response
         expect(res.body).toHaveProperty("message");
         expect(res.body.message).toEqual("token not provided");
-        //         done();
-        //         expect(res.body.response).toHaveProperty("title");
         done();
       });
   });
@@ -91,26 +90,25 @@ describe("POST /photo/", () => {
 describe("GET /photo/", () => {
   beforeAll(async () => {
     try {
-      // const dataUser = verifyToken(token);
-      // console.log(dataUser.id);
+      // create user dan mengubah variable global
       userCreate = await User.create({
         username: "andi",
         email: "andi@gmail.com",
         password: "andi123",
       });
+      // create data photo untuk menjalankan testing get data photo
       photoCreate = await Photo.create({
         title: "photo testing",
         caption: "caption photo testing",
         image_url: "https://picsum.photos/seed/picsum/200/300",
         UserId: userCreate.id,
       });
-      //       console.log(cred.data);
+      // generate token dan mengubah variable global
       token = generateToken({
         id: userCreate.id,
         username: userCreate.username,
         email: userCreate.email,
       });
-      console.log(token);
     } catch (error) {
       console.log(error);
     }
@@ -126,7 +124,7 @@ describe("GET /photo/", () => {
         if (err) {
           done(err);
         }
-        console.log(res.body.data[0], "get all photo succes (with token)");
+        // check API response
         expect(res.body.data[0]).toHaveProperty("id");
         expect(res.body.data[0].id).toEqual(photoCreate.id);
         expect(res.body.data[0]).toHaveProperty("title");
@@ -152,13 +150,13 @@ describe("GET /photo/", () => {
   it("get all photo response 404", (done) => {
     request(app)
       .get("/photo/")
-      .set("authorization", ``)
+      .set("authorization", ``) // set agar slot untuk token terdeteksi kosong
       .expect(404)
       .end((err, res) => {
         if (err) {
           done(err);
         }
-        console.log(res.body, "test get all photo error");
+        // cek API response
         expect(res.body).toHaveProperty("message");
         expect(res.body.message).toEqual("token not provided");
         done();
@@ -178,23 +176,25 @@ describe("GET /photo/", () => {
 describe("GET /photo/:id", () => {
   beforeAll(async () => {
     try {
+      // create user dan mengubah variable global
       userCreate = await User.create({
         username: "andi",
         email: "andi@gmail.com",
         password: "andi123",
       });
+      // create data photo untuk menjalankan testing get data photo
       photoCreate = await Photo.create({
         title: "photo testing",
         caption: "caption photo testing",
         image_url: "https://picsum.photos/seed/picsum/200/300",
         UserId: userCreate.id,
       });
+      // generate token dan mengubah variable global
       token = generateToken({
         id: userCreate.id,
         username: userCreate.username,
         email: userCreate.email,
       });
-      console.log(token);
     } catch (error) {
       console.log(error);
     }
@@ -212,7 +212,7 @@ describe("GET /photo/:id", () => {
         if (err) {
           done(err);
         }
-        console.log(res.body.data, "test get photo by id (with token)");
+        // cek API response
         expect(res.body.data).toHaveProperty("id");
         expect(res.body.data.id).toEqual(photoCreate.id);
         expect(res.body.data).toHaveProperty("title");
@@ -225,12 +225,6 @@ describe("GET /photo/:id", () => {
         expect(res.body.data.UserId).toEqual(userCreate.id);
         expect(res.body.data).toHaveProperty("createdAt");
         expect(res.body.data).toHaveProperty("updatedAt");
-
-        // expect(res.body.data.createdAt).toEqual(photoCreate.createdAt);
-        // expect(res.body.data.updatedAt).toEqual(photoCreate.updatedAt);
-        // console.log(photoCreate.createdAt);
-
-        // todooo: di console log berupa date, di subtitusi malah string
         done();
       });
   });
@@ -245,7 +239,7 @@ describe("GET /photo/:id", () => {
         if (err) {
           done(err);
         }
-        console.log(res.body, "test error get photo by id (with token) data not found");
+        // cek API response
         expect(res.body).toHaveProperty("message");
         expect(res.body.message).toEqual("data not found");
         done();
